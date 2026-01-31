@@ -277,7 +277,7 @@ const ManageAdmins = () => {
       {/* Empty State */}
       {filteredAdmins.length === 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          {/* <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" /> */}
           <h3 className="text-lg font-medium text-gray-900 mb-2">No admins found</h3>
           <p className="text-gray-600 mb-6">Try adjusting your search criteria</p>
           <button 

@@ -6,10 +6,16 @@ import Certificates from './pages/Certificates';
 import Products from './pages/Products';
 import Companies from './pages/Companies';
 import ManageAdmins from './pages/ManageAdmins';
+import AuthProvider from './contexts/AuthProvider';
+import { Toaster } from 'sonner';
+import AllProvider from './contexts/AllProvider';
 
 function App() {
   return (
+    <>
     <Router>
+    <AuthProvider>
+      <AllProvider>
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
         <main className="lg:ml-64">
@@ -23,7 +29,16 @@ function App() {
           </Routes>
         </main>
       </div>
+    <Toaster
+      position="top-right"
+      richColors
+      closeButton
+      visibleToasts={1}
+      />
+    </AllProvider>
+    </AuthProvider>
     </Router>
+    </>
   );
 }
 
