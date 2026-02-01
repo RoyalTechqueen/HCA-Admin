@@ -194,7 +194,7 @@ const Dashboard = () => {
             type: isApp ? item.applicationType : item.certificateType || 'New',
             status: item.status || 'pending',
             date: item.createdAt || item.updatedAt || item.submissionDate || new Date().toISOString().split('T')[0],
-            product: item.productName || item.product || 'N/A',
+            product: item?.productName || item.product?.name || 'N/A',
             isApplication: isApp
           };
         });

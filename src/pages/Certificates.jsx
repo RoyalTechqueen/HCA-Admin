@@ -42,6 +42,7 @@ const Certificates = () => {
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [companySuggestions, setCompanySuggestions] = useState([]);
 
   const { 
     certificates, 
@@ -59,10 +60,25 @@ const Certificates = () => {
   // Fetch certificates on component mount
   useEffect(() => {
     fetchCertificates();
-    
   }, []);
-  
-  console.log(certificates);
+
+  // Update company suggestions when companies or filter changes
+  useEffect(() => {
+    if (filter.company && companies.length > 0) {
+      const searchTerm = filter.company.toLowerCase();
+      const suggestions = companies
+        .filter(company => 
+          company.companyName?.toLowerCase().includes(searchTerm) ||
+          company.name?.toLowerCase().includes(searchTerm) ||
+          company.registrationNo?.toLowerCase().includes(searchTerm)
+        )
+        .slice(0, 5); // Limit to 5 suggestions
+      setCompanySuggestions(suggestions);
+    } else {
+      setCompanySuggestions([]);
+    }
+  }, [filter.company, companies]);
+
   // Handle refresh
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -70,7 +86,36 @@ const Certificates = () => {
     setIsRefreshing(false);
   };
 
-  // Filter certificates
+  // Get company name from certificate
+  const getCompanyNameFromCert = (cert) => {
+    // Try different possible fields for company name
+    if (cert.companyName) return cert.companyName;
+    if (cert.company?.name) return cert.company.name;
+    if (cert.company?.companyName) return cert.company.companyName;
+    
+    // If companyId exists, find company from companies array
+    if (cert.companyId && companies.length > 0) {
+      const company = companies.find(c => 
+        c._id === cert.companyId || 
+        c.id === cert.companyId || 
+        c.registrationNo === cert.companyId
+      );
+      return company?.companyName || company?.name || 'Unknown Company';
+    }
+    
+    return 'Unknown Company';
+  };
+
+  // Get company ID from certificate
+  const getCompanyIdFromCert = (cert) => {
+    if (cert.companyId) return cert.companyId;
+    if (cert.company?._id) return cert.company._id;
+    if (cert.company?.id) return cert.company.id;
+    if (cert.company?.registrationNo) return cert.company.registrationNo;
+    return null;
+  };
+
+  // Filter certificates with improved company search
   const filteredCertificates = certificates.filter(cert => {
     // Tab filter
     switch (activeTab) {
@@ -88,16 +133,35 @@ const Certificates = () => {
         break;
     }
 
-    // Custom filter
-    if (filter.search && 
-        !cert.certificateNumber?.toLowerCase().includes(filter.search.toLowerCase()) &&
-        !cert.companyName?.toLowerCase().includes(filter.search.toLowerCase()) &&
-        !cert.product.name?.toLowerCase().includes(filter.search.toLowerCase())) {
-      return false;
+    const searchTerm = filter.search.toLowerCase();
+    const companyTerm = filter.company.toLowerCase();
+    const companyName = getCompanyNameFromCert(cert).toLowerCase();
+
+    // Search filter (searches multiple fields)
+    if (filter.search) {
+      const matchesSearch = 
+        cert.certificateNumber?.toLowerCase().includes(searchTerm) ||
+        companyName.includes(searchTerm) ||
+        cert.product?.name?.toLowerCase().includes(searchTerm) ||
+        cert.standard?.toLowerCase().includes(searchTerm) ||
+        cert.certificateType?.toLowerCase().includes(searchTerm);
+      
+      if (!matchesSearch) return false;
     }
-    if (filter.company && !cert.companyName?.toLowerCase().includes(filter.company.toLowerCase())) {
-      return false;
+
+    // Company filter (improved search)
+    if (filter.company) {
+      // Check if company name matches
+      if (!companyName.includes(companyTerm)) {
+        // Also check company ID if available
+        const companyId = getCompanyIdFromCert(cert);
+        if (!companyId?.toLowerCase().includes(companyTerm)) {
+          return false;
+        }
+      }
     }
+
+    // Date filters
     if (filter.dateFrom && cert.issueDate && new Date(cert.issueDate) < new Date(filter.dateFrom)) {
       return false;
     }
@@ -320,8 +384,14 @@ const Certificates = () => {
   // Get company name by ID
   const getCompanyName = (companyId) => {
     if (!companyId) return 'Unknown Company';
-    const company = companies.find(c => c.registrationNo === companyId || c._id === companyId);
-    return company?.companyName?.charAt(0)?.toUpperCase() + company?.companyName?.slice(1) || company?.name || 'Unknown Company';
+    const company = companies.find(c => 
+      c.registrationNo === companyId || 
+      c._id === companyId || 
+      c.id === companyId
+    );
+    return company?.companyName?.charAt(0)?.toUpperCase() + company?.companyName?.slice(1) || 
+           company?.name?.charAt(0)?.toUpperCase() + company?.name?.slice(1) || 
+           'Unknown Company';
   };
 
   // Get product name by ID
@@ -335,6 +405,12 @@ const Certificates = () => {
   const getApplication = (applicationId) => {
     if (!applicationId) return null;
     return applications.find(a => a._id === applicationId._id || a._id === applicationId);
+  };
+
+  // Handle company suggestion click
+  const handleCompanySuggestionClick = (companyName) => {
+    setFilter({ ...filter, company: companyName });
+    setCompanySuggestions([]);
   };
 
   // View Modal Component
@@ -429,7 +505,7 @@ const Certificates = () => {
                     <div>
                       <p className="text-sm text-gray-600">Company Name</p>
                       <p className="font-medium text-gray-900">
-                        {selectedCertificate.companyName || getCompanyName(selectedCertificate.companyId) || 'N/A'}
+                        {getCompanyNameFromCert(selectedCertificate)}
                       </p>
                     </div>
                     <div>
@@ -465,7 +541,7 @@ const Certificates = () => {
                     <div>
                       <p className="text-sm text-gray-600">Product Name</p>
                       <p className="font-medium text-gray-900">
-                        {selectedCertificate.product.name || getProductName(selectedCertificate.productId) || 'N/A'}
+                        {selectedCertificate.product?.name || getProductName(selectedCertificate.productId) || 'N/A'}
                       </p>
                     </div>
                     <div>
@@ -717,18 +793,35 @@ const Certificates = () => {
               </div>
             </div>
             
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Search company..."
+                  placeholder="Search by company name..."
                   className="pl-10 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#00853b] focus:ring-1 focus:ring-[#00853b]"
                   value={filter.company}
                   onChange={(e) => setFilter({ ...filter, company: e.target.value })}
                   disabled={isLoading}
                 />
+                {companySuggestions.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    {companySuggestions.map((company) => (
+                      <button
+                        key={company._id || company.id}
+                        type="button"
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 text-sm text-gray-700"
+                        onClick={() => handleCompanySuggestionClick(company.companyName || company.name)}
+                      >
+                        <div className="font-medium">{company.companyName || company.name}</div>
+                        {company.registrationNo && (
+                          <div className="text-xs text-gray-500">Reg: {company.registrationNo}</div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             
@@ -769,7 +862,10 @@ const Certificates = () => {
             </div>
             <div className="flex gap-2">
               <button 
-                onClick={() => setFilter({ search: '', company: '', dateFrom: '', dateTo: '', status: '' })}
+                onClick={() => {
+                  setFilter({ search: '', company: '', dateFrom: '', dateTo: '', status: '' });
+                  setCompanySuggestions([]);
+                }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                 disabled={isLoading}
               >
@@ -814,6 +910,8 @@ const Certificates = () => {
                   const statusConfig = getStatusConfig(cert.status);
                   const expiryStatus = getExpiryStatus(cert.expiryDate, cert.status);
                   const StatusIcon = statusConfig.icon;
+                  const companyName = getCompanyNameFromCert(cert);
+                  const productName = cert.product?.name || getProductName(cert.productId);
 
                   return (
                     <div key={certId} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden group">
@@ -839,11 +937,13 @@ const Certificates = () => {
                         <div className="space-y-4">
                           <div>
                             <p className="text-sm text-gray-600 mb-1">Company</p>
-                            <p className="font-medium text-gray-900">{cert.companyName || getCompanyName(cert.companyId)}</p>
+                            <p className="font-medium text-gray-900">{companyName}</p>
                           </div>
                           <div>
                             <p className="text-sm text-gray-600 mb-1">Product</p>
-                            <p className="font-medium text-gray-900">{cert.product?.name?.charAt(0)?.toUpperCase() + cert?.product?.name?.slice(1) || getProductName(cert.productId)}</p>
+                            <p className="font-medium text-gray-900">
+                              {productName?.charAt(0)?.toUpperCase() + productName?.slice(1)}
+                            </p>
                           </div>
                           
                           {/* Dates */}
@@ -905,6 +1005,7 @@ const Certificates = () => {
                     onClick={() => { 
                       setFilter({ search: '', company: '', dateFrom: '', dateTo: '', status: '' });
                       setActiveTab('all');
+                      setCompanySuggestions([]);
                     }}
                     className="px-4 py-2 text-sm font-medium text-[#00853b] hover:text-green-700"
                   >
@@ -944,6 +1045,8 @@ const Certificates = () => {
                         const statusConfig = getStatusConfig(cert.status);
                         const expiryStatus = getExpiryStatus(cert.expiryDate, cert.status);
                         const StatusIcon = statusConfig.icon;
+                        const companyName = getCompanyNameFromCert(cert);
+                        const productName = cert.product?.name || getProductName(cert.productId);
 
                         return (
                           <tr key={certId} className="hover:bg-gray-50">
@@ -965,12 +1068,12 @@ const Certificates = () => {
                             </td>
                             <td className="p-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {cert.companyName || getCompanyName(cert.companyId)}
+                                {companyName}
                               </div>
                             </td>
                             <td className="p-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {cert.product.name || getProductName(cert.productId)}
+                                {productName}
                               </div>
                               {cert.standard && (
                                 <div className="text-xs text-gray-500">{cert.standard}</div>
@@ -1043,6 +1146,7 @@ const Certificates = () => {
                             onClick={() => { 
                               setFilter({ search: '', company: '', dateFrom: '', dateTo: '', status: '' });
                               setActiveTab('all');
+                              setCompanySuggestions([]);
                             }}
                             className="px-4 py-2 text-sm font-medium text-[#00853b] hover:text-green-700"
                           >
