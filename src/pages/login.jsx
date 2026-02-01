@@ -2,6 +2,8 @@ import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import logo from '../assets/hcaLogo.png'
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,7 +29,7 @@ export default function Login() {
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
         <div className="flex flex-col items-center">
           <img
-            src="/src/assets/hcaLogo.png"
+            src={logo}
             alt="HCA Logo"
             className="w-full h-20 mb-3"
           />
