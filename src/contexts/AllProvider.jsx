@@ -410,6 +410,61 @@ const AllProvider = ({ children }) => {
     }
   };
 
+  // 🔄 Approve product
+  const approveProduct = async (id) => {
+    const token = getToken();
+    if (!token) return { success: false };
+
+    setIsLoading(true);
+    try {
+      const res = await axios.put(`${baseUrl}/products/approve/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? res.data.products : p))
+      );
+      console.log(res.data)
+      toast.success(res.data.message);
+      return { success: true };
+    } catch(err) {
+      toast.error(err.response?.data?.message || "Failed to approve product");
+      return { success: false };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 🔄 Reject product
+  const rejectProduct = async (id) => {
+    const token = getToken();
+    if (!token) return { success: false };
+
+    setIsLoading(true);
+    try {
+      const res = await axios.put(`${baseUrl}/products/reject/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? res.data.products : p))
+      );
+      toast.success(res.data.message);
+      return { success: true };
+    } catch(err) {
+      toast.error(err.response?.data?.message || "Failed to reject product");
+      return { success: false };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // 📄 Add certificate
   const addCertificate = async (id) => {
     const token = getToken();
@@ -544,7 +599,7 @@ const AllProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      return res.data.certificate;
+      return res.data;
     } catch (error) {
       console.error("Failed to fetch certificate:", error);
       return null;
@@ -561,6 +616,9 @@ const AllProvider = ({ children }) => {
     deleteProduct,
     updateProduct,
     getProductById,
+    approveProduct,
+    rejectProduct,
+
 
 
     // Companies
