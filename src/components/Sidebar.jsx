@@ -11,7 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  MessageCircleIcon
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -25,6 +26,7 @@ const Sidebar = () => {
     { path: '/products', icon: Package, label: 'Products' },
     { path: '/certificates', icon: Award, label: 'Certificates' },
     { path: '/manage-admins', icon: Users, label: 'Manage Admin' },
+    { path: '/message', icon: MessageCircleIcon, label: 'Message' },
   ];
 
   return (

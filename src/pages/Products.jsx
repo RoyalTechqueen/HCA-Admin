@@ -400,9 +400,9 @@ const Products = () => {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Product Category</p>
+                      <p className="text-sm text-gray-600">Product Market Type</p>
                       <p className="font-medium text-gray-900">
-                        {selectedProduct.category || 'N/A'}
+                        {selectedProduct.marketType || 'N/A'}
                       </p>
                     </div>
                     <div>
@@ -815,7 +815,7 @@ const Products = () => {
                   </th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-                  <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                  <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market Type</th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -860,8 +860,8 @@ const Products = () => {
                           )}
                         </td>
                         <td className="p-4">
-                          <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${product.category ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
-                            {product.category || 'Uncategorized'}
+                          <span className={`inline-flex px-3 py-1 text-xs font-medium rounded-full ${product.marketType ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+                            {product.marketType || 'Uncategorized'}
                           </span>
                         </td>
                         <td className="p-4">
