@@ -263,7 +263,8 @@ const Certificates = () => {
         }
         fetchCertificates();
       } catch (error) {
-        toast.error("Failed to delete certificate");
+        toast.error("Failed to delete certificate")
+        console.log(error);
       }
     }
   };
@@ -277,6 +278,7 @@ const Certificates = () => {
         fetchCertificates();
       } catch (error) {
         toast.error("Failed to renew certificate");
+        console.log(error)
       }
     }
   };
@@ -293,6 +295,7 @@ const Certificates = () => {
       }
     } catch (error) {
       toast.error("Failed to load certificate details");
+      console.log(error)
     } finally {
       setIsLoadingDetails(false);
     }
@@ -301,11 +304,12 @@ const Certificates = () => {
   // Handle Download Certificate
   const handleDownloadCertificate = async (certId) => {
     try {
-      toast.success("Certificate download initiated!");
+      toast.success("Certificate download initiated!" + certId);
       // Implement actual download logic here
       // You might want to add a download function in your AllProvider
     } catch (error) {
       toast.error("Failed to download certificate");
+      console.log(error)
     }
   };
 
@@ -342,6 +346,7 @@ const Certificates = () => {
         fetchCertificates();
       } catch (error) {
         toast.error("Failed to delete some certificates");
+        console.log(error)
       }
     }
   };
@@ -382,17 +387,17 @@ const Certificates = () => {
   };
 
   // Get company name by ID
-  const getCompanyName = (companyId) => {
-    if (!companyId) return 'Unknown Company';
-    const company = companies.find(c => 
-      c.registrationNo === companyId || 
-      c._id === companyId || 
-      c.id === companyId
-    );
-    return company?.companyName?.charAt(0)?.toUpperCase() + company?.companyName?.slice(1) || 
-           company?.name?.charAt(0)?.toUpperCase() + company?.name?.slice(1) || 
-           'Unknown Company';
-  };
+  // const getCompanyName = (companyId) => {
+  //   if (!companyId) return 'Unknown Company';
+  //   const company = companies.find(c => 
+  //     c.registrationNo === companyId || 
+  //     c._id === companyId || 
+  //     c.id === companyId
+  //   );
+  //   return company?.companyName?.charAt(0)?.toUpperCase() + company?.companyName?.slice(1) || 
+  //          company?.name?.charAt(0)?.toUpperCase() + company?.name?.slice(1) || 
+  //          'Unknown Company';
+  // };
 
   // Get product name by ID
   const getProductName = (productId) => {

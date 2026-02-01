@@ -209,6 +209,7 @@ const Applications = () => {
         fetchApplications();
       } catch (error) {
         toast.error("Failed to reject application");
+        console.log(error)
       }
     }
   };
@@ -226,6 +227,7 @@ const Applications = () => {
         fetchApplications();
       } catch (error) {
         toast.error("Failed to delete application");
+        console.log(error)
       }
     }
   };
@@ -242,6 +244,7 @@ const Applications = () => {
       }
     } catch (error) {
       toast.error("Failed to load application details");
+      console.log(error)
     } finally {
       setIsLoadingDetails(false);
     }
@@ -250,10 +253,11 @@ const Applications = () => {
   // Handle Download Certificate
   const handleDownloadCertificate = async (appId) => {
     try {
-      toast.success("Certificate download initiated!");
+      toast.success("Certificate download initiated!" + appId);
       // Implement actual download logic here
     } catch (error) {
       toast.error("Failed to download certificate");
+      console.log(error)
     }
   };
 
@@ -290,6 +294,8 @@ const Applications = () => {
         fetchApplications();
       } catch (error) {
         toast.error("Failed to delete some applications");
+        console.log(error);
+        
       }
     }
   };
