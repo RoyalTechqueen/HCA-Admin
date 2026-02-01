@@ -655,16 +655,16 @@ const formatDate = (date) => {
                                   </div>
                                 )}
                                 
-                                <div className={`flex ${message.senderType === 'admin' ? 'justify-end' : 'justify-start'}`}>
-                                  <div className={`max-w-[70%] ${message.senderType === 'admin' ? 'ml-auto' : 'mr-auto'}`}>
+                                <div className={`flex ${message.receiver !== 'admin' ? 'justify-end' : 'justify-start'}`}>
+                                  <div className={`max-w-[70%] ${message.receiver !== 'admin' ? 'ml-auto' : 'mr-auto'}`}>
                                     <div className={`rounded-2xl px-4 py-3 ${
-                                      message.senderType === 'admin' 
+                                      message.receiver !== 'admin' 
                                         ? 'bg-[#00853b] text-white rounded-br-none' 
                                         : 'bg-white border border-gray-200 rounded-bl-none'
                                     }`}>
                                       <div className="flex items-center space-x-2 mb-2">
                                         <span className="text-xs font-medium opacity-90">
-                                          {message.senderType === 'admin' ? 'You' : selectedUser?.fullName || 'User'}
+                                          {message.receiver !== 'admin' ? 'You' : selectedUser?.fullName || 'User'}
                                         </span>
                                         <Clock className="w-3 h-3" />
                                         <span className="text-xs opacity-75">
@@ -677,7 +677,7 @@ const formatDate = (date) => {
                                         <div className="mt-3 space-y-2">
                                           {message.attachments.map((attachment, idx) => (
                                             <div key={idx} className={`p-3 rounded-lg ${
-                                              message.senderType === 'admin' 
+                                              message.receiver !== 'admin' 
                                                 ? 'bg-[#00853b]/20' 
                                                 : 'bg-gray-100'
                                             }`}>
@@ -725,7 +725,7 @@ const formatDate = (date) => {
                                       )}
                                       
                                       <div className="flex items-center justify-end mt-2">
-                                        {message.senderType === 'admin' && (
+                                        {message.receiver !== 'admin' && (
                                           <div className="text-xs opacity-75">
                                             {message.read ? (
                                               <span className="flex items-center">

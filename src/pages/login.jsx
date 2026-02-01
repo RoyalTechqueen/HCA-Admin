@@ -35,7 +35,7 @@ export default function Login() {
             alt="HCA Logo"
             className="w-full h-20 mb-3"
           />
-          <h1 className="text-3xl font-bold text-gray-800">HCA Admin Portal</h1>
+          <h1 className="text-3xl font-bold text-gray-800">HDI Admin Portal</h1>
           <p className="text-gray-500 mt-1">
             Enter Your Credentials To Proceed to Your Dashboard
           </p>
