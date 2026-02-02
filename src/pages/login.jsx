@@ -1,25 +1,41 @@
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import logo from '../assets/hcaLogo.png'
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const {signin, signingIn} = useAuth()
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+
+    const formData = {email, password}
+
+    try {
+      await signin(formData, navigate)
+    } catch (error) {
+      console.log(error);      
+    }
   };
+
+  const year = new Date().getFullYear();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 via-gray-200 to-green-500 px-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6">
         <div className="flex flex-col items-center">
           <img
-            src="/src/assets/hcaLogo.png"
+            src={logo}
             alt="HCA Logo"
             className="w-full h-20 mb-3"
           />
-          <h1 className="text-3xl font-bold text-gray-800">HCA Admin Portal</h1>
+          <h1 className="text-3xl font-bold text-gray-800">HDI Admin Portal</h1>
           <p className="text-gray-500 mt-1">
             Enter Your Credentials To Proceed to Your Dashboard
           </p>
@@ -62,12 +78,12 @@ export default function Login() {
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold shadow-md transition"
           >
-            Login
+            {signingIn ? "Loading..." : "Login"}
           </button>
         </form>
 
         <div className="text-center text-gray-500 text-sm mt-4">
-          &copy; 2026 HCA Admin. All rights reserved.
+          &copy; {year} HCA Admin. All rights reserved.
         </div>
       </div>
     </div>
