@@ -146,6 +146,7 @@ const Products = () => {
       fetchProducts();
     } catch (error) {
       toast.error("Failed to approve product");
+      console.log(error)
     }
   };
 
@@ -168,6 +169,7 @@ const Products = () => {
         fetchProducts();
       } catch (error) {
         toast.error("Failed to reject product");
+        console.log(error)
       }
     }
   };
@@ -187,6 +189,7 @@ const Products = () => {
         fetchProducts();
       } catch (error) {
         toast.error("Failed to delete product");
+        console.log(error)
       }
     }
   };
@@ -203,6 +206,7 @@ const Products = () => {
       }
     } catch (error) {
       toast.error("Failed to load product details");
+      console.log(error)
     } finally {
       setIsLoadingDetails(false);
     }
@@ -241,6 +245,7 @@ const Products = () => {
         fetchProducts();
       } catch (error) {
         toast.error("Failed to delete some products");
+        console.log(error)
       }
     }
   };
