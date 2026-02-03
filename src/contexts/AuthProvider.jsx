@@ -64,8 +64,6 @@ const AuthProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log(res.data.user);
       
 
       setUser(res.data.user); // ✅ now your user is available everywhere
@@ -83,7 +81,6 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await axios.post(`${baseUrl}/auth/admin-login`, formData);
       const { message, accessToken, status, user } = res.data;
-      console.log(res.data);
       
       if (status === "success") {
         if (user.role !== "admin" && user.role !== "super admin") {

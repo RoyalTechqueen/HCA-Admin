@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Home, 
@@ -15,9 +15,17 @@ import {
   MessageCircleIcon
 } from 'lucide-react';
 
+import { useAuth } from '../hooks/useAuth'
+
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const {user, fetchUser} = useAuth()
+
+  useEffect(()=> {
+    fetchUser()
+  }, [])
 
   const navItems = [
     { path: '/dashboard', icon: Home, label: 'Dashboard' },
