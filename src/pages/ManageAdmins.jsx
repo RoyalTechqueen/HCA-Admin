@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from 'sonner'
 import {
   Search,
   UserPlus,
@@ -78,11 +79,16 @@ const ManageAdmins = () => {
     try {
       setSubmitting(true);
 
+      const token = JSON.parse(localStorage.getItem("accessToken"))
+
       const res = await fetch(
         `${import.meta.env.VITE_BASE_URL}/users/admin`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json" ,
+            Authorization: `Bearer ${token} `,
+          },
           body: JSON.stringify({
             fullName: newAdmin.name,
             email: newAdmin.email,
@@ -93,8 +99,11 @@ const ManageAdmins = () => {
         }
       );
 
-      if (!res.ok) throw new Error("Failed to create admin");
-console.log("TOKEN:", localStorage.getItem("token"));
+      const data = await res.json()
+
+      if (!res.ok) throw new Error(data.message);
+
+      toast.success(data.message)
 
       setShowAddForm(false);
       setNewAdmin({
@@ -107,8 +116,8 @@ console.log("TOKEN:", localStorage.getItem("token"));
 
       fetchAdmins(); // 🔁 refresh list
     } catch (err) {
-      console.error(err);
-      toast.error("Error creating admin");
+      console.log(err);
+      toast.error(err.message);
     } finally {
       setSubmitting(false);
     }

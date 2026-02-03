@@ -106,7 +106,7 @@ const AllProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // console.log(res.data)
+      console.log(res.data)
       
       setApplications(res.data || []);
       setErrors("");
