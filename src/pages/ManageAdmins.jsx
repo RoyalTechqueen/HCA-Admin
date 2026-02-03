@@ -31,10 +31,18 @@ const ManageAdmins = () => {
   const fetchAdmins = async () => {
     try {
       setLoading(true);
+      const token = JSON.parse(localStorage.getItem("accessToken"))
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/users?role=admin`
+        `${import.meta.env.VITE_BASE_URL}/users/admin`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
       );
       const data = await res.json();
+
+      console.log(data);
+      
 
       const adminsArray = Array.isArray(data)
         ? data
