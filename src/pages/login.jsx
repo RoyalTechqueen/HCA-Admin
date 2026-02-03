@@ -33,7 +33,7 @@ export default function Login() {
           <img
             src={logo}
             alt="HCA Logo"
-            className="w-full h-20 mb-3"
+            className="w-full h-full mb-6"
             loading="lazy"
           />
           <h1 className="text-3xl font-bold text-gray-800">HDI Admin Portal</h1>

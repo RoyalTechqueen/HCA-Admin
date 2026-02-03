@@ -16,12 +16,14 @@ import {
 } from 'lucide-react';
 
 import { useAuth } from '../hooks/useAuth'
+import {useNavigate} from 'react-router-dom'
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const {user, fetchUser} = useAuth()
+  const navigate = useNavigate()
 
   useEffect(()=> {
     fetchUser()
@@ -36,6 +38,11 @@ const Sidebar = () => {
     { path: '/manage-admins', icon: Users, label: 'Manage Admin' },
     { path: '/message', icon: MessageCircleIcon, label: 'Message' },
   ];
+
+  function logout(){
+    localStorage.removeItem("accessToken")
+    navigate("/")
+  }
 
   return (
     <>
@@ -55,7 +62,7 @@ const Sidebar = () => {
           </div>
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-[#00853b] flex items-center justify-center text-white font-bold">
-              A
+              {user?.fullName?.charAt(0).toUpperCase()}
             </div>
           </div>
         </div>
@@ -80,7 +87,7 @@ const Sidebar = () => {
             )}
             {isCollapsed && (
               <div className="w-10 h-10 rounded-lg bg-[#00853b] flex items-center justify-center">
-                <span className="text-white font-bold text-lg">AD</span>
+                <span className="text-white font-bold text-lg">{user.fullName.charAt(0).toUpperCase()}</span>
               </div>
             )}
             <button
@@ -114,8 +121,9 @@ const Sidebar = () => {
           
           <button className={`
             flex items-center ${isCollapsed ? 'justify-center px-3' : 'px-4'} py-3 w-full rounded-lg
-            text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 mt-8
-          `}>
+            text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 mt-8`}
+            onClick={logout}
+            >
             <LogOut className={`w-5 h-5 ${isCollapsed ? '' : 'mr-3'}`} />
             {!isCollapsed && <span className="text-sm font-medium">Logout</span>}
           </button>
@@ -126,11 +134,11 @@ const Sidebar = () => {
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-[#00853b]/10 flex items-center justify-center">
-                <span className="text-[#00853b] font-bold">A</span>
+                <span className="text-[#00853b] font-bold">{user?.fullName?.charAt(0).toUpperCase()}</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-800">Admin User</p>
-                <p className="text-xs text-gray-600">Super Admin</p>
+                <p className="text-sm font-medium text-gray-800">{`${user?.fullName?.split(' ')[0].charAt(0).toUpperCase() + user?.fullName?.split(' ')[0].slice(1)} `}</p>
+                <p className="text-xs text-gray-600">{user?.role}</p>
               </div>
             </div>
           </div>

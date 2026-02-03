@@ -155,7 +155,11 @@ const ManageAdmins = () => {
 
   const handleDeleteAdmin = (id) => {
     if (window.confirm("Are you sure you want to delete this admin?")) {
-      setAdmins((prev) => prev.filter((admin) => admin.id !== id));
+      try {
+        // const res = await 
+      } catch (error) {
+        console.log(error)
+      }
     }
   };
 
@@ -414,7 +418,7 @@ const ManageAdmins = () => {
                     <button className="p-1.5 hover:bg-gray-100 rounded-lg">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    {admin.role !== "Super Admin" && (
+                    {admin.role !== "super admin" && (
                       <button
                         onClick={() => handleDeleteAdmin(admin.id)}
                         className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg"
