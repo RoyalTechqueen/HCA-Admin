@@ -83,7 +83,7 @@ export default function Login() {
         </form>
 
         <div className="text-center text-gray-500 text-sm mt-4">
-          &copy; {year} HCA Admin. All rights reserved.
+          &copy; {year} HDI Admin. All rights reserved.
         </div>
       </div>
     </div>
