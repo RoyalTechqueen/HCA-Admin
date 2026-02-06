@@ -3,6 +3,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import logo from '../assets/hcaLogo.png'
+import { PulseLoader } from "react-spinners";
 
 
 export default function Login() {
@@ -33,7 +34,7 @@ export default function Login() {
           <img
             src={logo}
             alt="HCA Logo"
-            className="w-full h-20 mb-3"
+            className="w-full h-full mb-6"
             loading="lazy"
           />
           <h1 className="text-3xl font-bold text-gray-800">HDI Admin Portal</h1>
@@ -77,9 +78,9 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold shadow-md transition"
+            className="w-full bg-green-600 hover:bg-green-700 cursor-pointer text-white py-3 rounded-xl font-semibold shadow-md transition"
           >
-            {signingIn ? "Loading..." : "Login"}
+            {signingIn ? <PulseLoader color="white" /> : "Login"}
           </button>
         </form>
 
